@@ -1,6 +1,7 @@
 package com.gonzobeans.connectfour.engine;
 
 import com.gonzobeans.connectfour.model.GamePiece;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,24 @@ public class GameBoard {
     private static final int COLUMNS = 7;
     private static final int WIN_TARGET = 4;
 
-    private static final GamePiece[][] gameBoard = new GamePiece[ROWS][COLUMNS];
+    private final GamePiece[][] gameBoard ;
+    @Getter
+    private final List<GamePiece> gamePieces;
+    private List<GamePiece> winningPieces;
+
+    public GameBoard() {
+        this.gameBoard = new GamePiece[ROWS][COLUMNS];
+        this.gamePieces = new ArrayList<>();
+    }
 
     public Optional<GamePiece> getPiece(int row, int column) {
         return outOfBounds(row, column)
             ? Optional.empty()
             : Optional.ofNullable(gameBoard[row][column]);
+    }
+
+    public Optional<List<GamePiece>> getWinningPieces() {
+        return winningPieces != null ? Optional.of(winningPieces) : Optional.empty();
     }
 
     public void clearBoard() {
@@ -41,6 +54,7 @@ public class GameBoard {
             }).orElseGet(() -> {
                 gameBoard[row.get()][column] = gamePiece;
                 gamePiece.setCoordinates(row.get(), column);
+                gamePieces.add(gamePiece);
                 return true;
             });
         }
@@ -51,6 +65,7 @@ public class GameBoard {
             for (int column = 0; column < COLUMNS; column++) {
                 var winList = checkWinTarget(row, column);
                     if (winList.isPresent()) {
+                        this.winningPieces = winList.get();
                         return winList;
                 }
             }
