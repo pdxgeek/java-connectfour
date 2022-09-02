@@ -2,12 +2,16 @@ package com.gonzobeans.connectfour.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 @Getter
 @RequiredArgsConstructor
 public class GamePiece {
+    @Getter
     private final Color color;
     private Integer row;
     private Integer column;
+    @Setter
     boolean highlight = false;
 
     public static GamePiece red() {
@@ -25,6 +29,14 @@ public class GamePiece {
 
     public enum Color {
         RED, BLACK;
+    }
+
+    @Override
+    public String toString() {
+        return "{ \"color\": \"" + color + "\", "
+            + "\"row\": " + row + ", "
+            + "\"column\": " + column  + ", "
+            + "\"highlight\": " + highlight + " }";
     }
 
     @Override

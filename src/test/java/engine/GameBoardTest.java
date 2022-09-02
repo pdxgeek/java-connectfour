@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,20 +26,25 @@ class GameBoardTest {
         board.dropPiece(GamePiece.black(), 4);
         board.dropPiece(GamePiece.red(), 2);
         board.dropPiece(GamePiece.black(), 3);
-        assertFalse(board.checkWin());
+        assertFalse(board.checkWin().isPresent());
         board.dropPiece(GamePiece.red(), 1);
         board.dropPiece(GamePiece.black(), 1);
         board.dropPiece(GamePiece.red(), 0);
         board.dropPiece(GamePiece.black(), 0);
         board.dropPiece(GamePiece.red(), 3);
-        assertFalse(board.checkWin());
+        assertFalse(board.checkWin().isPresent());
         board.dropPiece(GamePiece.black(), 2);
-        assertTrue(board.checkWin());
+        var win = board.checkWin();
+        assertTrue(win.isPresent());
+        printWinningPieces(win.get());
         //assertTrue(board.checkWin());
+
         printBoard();
     }
 
-
+    private void printWinningPieces(List<GamePiece> pieces) {
+        pieces.forEach(System.out::println);
+    }
 
     private void printBoard() {
         var rowList = new LinkedList<String>();

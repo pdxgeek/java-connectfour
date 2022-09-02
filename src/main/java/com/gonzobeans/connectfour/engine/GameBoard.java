@@ -2,8 +2,13 @@ package com.gonzobeans.connectfour.engine;
 
 import com.gonzobeans.connectfour.model.GamePiece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
+import static com.gonzobeans.connectfour.model.GamePiece.Color;
 
 public class GameBoard {
     private static final int ROWS = 6;
@@ -41,17 +46,16 @@ public class GameBoard {
         }
     }
 
-    public boolean checkWin() {
-        var win = false;
+    public Optional<List<GamePiece>> checkWin() {
         for (int row = 0; row < ROWS; row++) {
             for (int column = 0; column < COLUMNS; column++) {
-                if (checkWinTarget(row, column)) {
-                    win = true;
-                    break;
+                var winList = checkWinTarget(row, column);
+                    if (winList.isPresent()) {
+                        return winList;
                 }
             }
         }
-        return win;
+        return Optional.empty();
     }
 
     public int getColumns() {
@@ -62,64 +66,84 @@ public class GameBoard {
         return ROWS;
     }
 
-    public boolean checkWinTarget(final int row, final int column) {
+    public Optional<List<GamePiece>> checkWinTarget(final int row, final int column) {
         if (getPiece(row, column).isEmpty()) {
-            return false;
+            return Optional.empty();
         }
-        var color = getPiece(row, column).get();
-        return checkRight(color, row, column)
-            || checkDiagonalUp(color, row, column)
-            || checkUp(color, row, column)
-            || checkDiagonalDown(color, row, column);
+        var color = getPiece(row, column).get().getColor();
+
+        var winList = Stream.of(
+            checkRight(color, row, column),
+            checkDiagonalUp(color, row, column),
+            checkUp(color, row, column),
+            checkDiagonalDown(color, row, column))
+            .filter(Optional::isPresent)
+            .findFirst().orElse(Optional.empty());
+
+        winList.ifPresent(list -> list.forEach(gamePiece -> gamePiece.setHighlight(true)));
+
+        return winList;
     }
 
-    private boolean checkRight(GamePiece color, final int row, final int column) {
+    private Optional<List<GamePiece>> checkRight(Color color, final int row, final int column) {
         var currentColumn = new AtomicInteger(column);
         var foundPiece = true;
+        var pieces = new ArrayList<GamePiece>();
         while (foundPiece && currentColumn.get() - column < WIN_TARGET) {
             foundPiece = getPiece(row, currentColumn.getAndIncrement())
-                .map(piece -> piece.equals(color))
+                .map(piece -> checkGamePieceColor(piece, color, pieces))
                 .orElse(false);
         }
-        return foundPiece;
+        return pieces.size() == WIN_TARGET ? Optional.of(pieces) : Optional.empty();
     }
 
-    private boolean checkDiagonalUp(GamePiece color, final int row, final int column) {
+    private Optional<List<GamePiece>> checkDiagonalUp(Color color, final int row, final int column) {
         var currentRow = new AtomicInteger(row);
         var currentColumn = new AtomicInteger(column);
         var foundPiece = true;
+        var pieces = new ArrayList<GamePiece>();
         while (foundPiece && currentColumn.get() - column < WIN_TARGET) {
             foundPiece = getPiece(currentRow.getAndIncrement(), currentColumn.getAndIncrement())
-                .map(piece -> piece.equals(color))
+                .map(piece -> checkGamePieceColor(piece, color, pieces))
                 .orElse(false);
         }
-        return foundPiece;
+        return pieces.size() == WIN_TARGET ? Optional.of(pieces) : Optional.empty();
     }
 
-    private boolean checkDiagonalDown(GamePiece color, final int row, final int column) {
+    private Optional<List<GamePiece>> checkDiagonalDown(Color color, final int row, final int column) {
         var currentRow = new AtomicInteger(row);
         var currentColumn = new AtomicInteger(column);
         var foundPiece = true;
+        var pieces = new ArrayList<GamePiece>();
         while (foundPiece && currentColumn.get() - column < WIN_TARGET) {
             foundPiece = getPiece(currentRow.getAndDecrement(), currentColumn.getAndIncrement())
-                .map(piece -> piece.equals(color))
+                .map(piece -> checkGamePieceColor(piece, color, pieces))
                 .orElse(false);
         }
-        return foundPiece;
+        return pieces.size() == WIN_TARGET ? Optional.of(pieces) : Optional.empty();
     }
 
-    private boolean checkUp(GamePiece color, final int row, final int column) {
+    private Optional<List<GamePiece>> checkUp(Color color, final int row, final int column) {
         var currentRow = new AtomicInteger(row);
         var foundPiece = true;
+        var pieces = new ArrayList<GamePiece>();
         while (foundPiece && currentRow.get() - row < WIN_TARGET) {
             foundPiece = getPiece(currentRow.getAndIncrement(), column)
-                .map(piece -> piece.equals(color))
+                .map(piece -> checkGamePieceColor(piece, color, pieces))
                 .orElse(false);
         }
-        return foundPiece;
+        return pieces.size() == WIN_TARGET ? Optional.of(pieces) : Optional.empty();
     }
 
     private boolean outOfBounds(int row, int column) {
         return (row < 0 || row >= ROWS) || (column < 0 || column >= COLUMNS);
+    }
+
+    private boolean checkGamePieceColor(GamePiece gamePiece, Color color, List<GamePiece> pieces) {
+        if (gamePiece.getColor().equals(color)) {
+            pieces.add(gamePiece);
+            return true;
+        }
+        return false;
     }
 }
