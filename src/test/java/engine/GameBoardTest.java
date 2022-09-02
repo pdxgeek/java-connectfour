@@ -1,6 +1,7 @@
 package engine;
 
-import model.GamePiece;
+import com.gonzobeans.connectfour.engine.GameBoard;
+import com.gonzobeans.connectfour.model.GamePiece;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

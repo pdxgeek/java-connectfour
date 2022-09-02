@@ -1,6 +1,6 @@
-package engine;
+package com.gonzobeans.connectfour.engine;
 
-import model.GamePiece;
+import com.gonzobeans.connectfour.model.GamePiece;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
