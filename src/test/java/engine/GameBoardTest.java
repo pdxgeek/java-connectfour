@@ -19,20 +19,20 @@ class GameBoardTest {
 
     @Test
     void dropPieces() {
-        board.dropPiece(GamePiece.RED, 0);
-        board.dropPiece(GamePiece.BLACK, 0);
-        board.dropPiece(GamePiece.RED, 1);
-        board.dropPiece(GamePiece.BLACK, 4);
-        board.dropPiece(GamePiece.RED, 2);
-        board.dropPiece(GamePiece.BLACK, 3);
+        board.dropPiece(GamePiece.red(), 0);
+        board.dropPiece(GamePiece.black(), 0);
+        board.dropPiece(GamePiece.red(), 1);
+        board.dropPiece(GamePiece.black(), 4);
+        board.dropPiece(GamePiece.red(), 2);
+        board.dropPiece(GamePiece.black(), 3);
         assertFalse(board.checkWin());
-        board.dropPiece(GamePiece.RED, 1);
-        board.dropPiece(GamePiece.BLACK, 1);
-        board.dropPiece(GamePiece.RED, 0);
-        board.dropPiece(GamePiece.BLACK, 0);
-        board.dropPiece(GamePiece.RED, 3);
+        board.dropPiece(GamePiece.red(), 1);
+        board.dropPiece(GamePiece.black(), 1);
+        board.dropPiece(GamePiece.red(), 0);
+        board.dropPiece(GamePiece.black(), 0);
+        board.dropPiece(GamePiece.red(), 3);
         assertFalse(board.checkWin());
-        board.dropPiece(GamePiece.BLACK, 2);
+        board.dropPiece(GamePiece.black(), 2);
         assertTrue(board.checkWin());
         //assertTrue(board.checkWin());
         printBoard();
@@ -46,7 +46,7 @@ class GameBoardTest {
             var builder = new StringBuilder();
             for (int c = 0; c < board.getColumns(); c++) {
                 builder.append(board.getPiece(r, c)
-                        .map(piece -> piece.equals(GamePiece.RED) ? " R " : " B ")
+                        .map(piece -> piece.equals(GamePiece.red()) ? " R " : " B ")
                         .orElse(" _ "));
             }
             rowList.addFirst(builder.toString());

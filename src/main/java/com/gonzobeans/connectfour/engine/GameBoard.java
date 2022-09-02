@@ -19,9 +19,9 @@ public class GameBoard {
     }
 
     public void clearBoard() {
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
-                gameBoard[r][c] = null;
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
+                gameBoard[row][column] = null;
             }
         }
     }
@@ -35,6 +35,7 @@ public class GameBoard {
                 return false;
             }).orElseGet(() -> {
                 gameBoard[row.get()][column] = gamePiece;
+                gamePiece.setCoordinates(row.get(), column);
                 return true;
             });
         }
@@ -42,9 +43,9 @@ public class GameBoard {
 
     public boolean checkWin() {
         var win = false;
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
-                if (checkWinTarget(r, c)) {
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
+                if (checkWinTarget(row, column)) {
                     win = true;
                     break;
                 }
