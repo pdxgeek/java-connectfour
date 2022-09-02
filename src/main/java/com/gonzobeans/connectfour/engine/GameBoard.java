@@ -37,6 +37,8 @@ public class GameBoard {
     }
 
     public void clearBoard() {
+        gamePieces.clear();
+        winningPieces = null;
         for (int row = 0; row < ROWS; row++) {
             for (int column = 0; column < COLUMNS; column++) {
                 gameBoard[row][column] = null;
