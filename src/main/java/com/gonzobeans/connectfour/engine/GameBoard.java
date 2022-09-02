@@ -1,5 +1,6 @@
 package com.gonzobeans.connectfour.engine;
 
+import com.gonzobeans.connectfour.exception.IllegalMoveException;
 import com.gonzobeans.connectfour.model.GamePiece;
 import lombok.Getter;
 
@@ -47,6 +48,10 @@ public class GameBoard {
     }
 
     public void dropPiece(GamePiece gamePiece, int column) {
+        if (outOfBounds(0, column)) {
+            throw new IllegalMoveException("Column[ " + column + "] is not within acceptable range [ 0 - "
+                + (COLUMNS - 1) + " ]");
+        }
         var row = new AtomicInteger();
         var placed = false;
         while (row.get() < ROWS && !placed) {
@@ -59,6 +64,9 @@ public class GameBoard {
                 gamePieces.add(gamePiece);
                 return true;
             });
+        }
+        if (!placed) {
+            throw new IllegalMoveException("Column[" + column + "] is full");
         }
     }
 
