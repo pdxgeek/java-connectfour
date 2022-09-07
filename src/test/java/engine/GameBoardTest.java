@@ -42,6 +42,17 @@ class GameBoardTest {
         printBoard();
     }
 
+    @Test
+    void dropPieces2() {
+        board.dropPiece(GamePiece.red(), 5);
+        board.dropPiece(GamePiece.black(), 2);
+        //assertTrue(board.checkWin());
+        board.getGamePieces().forEach(System.out::println);
+
+
+        printBoard();
+    }
+
     private void printWinningPieces(List<GamePiece> pieces) {
         pieces.forEach(System.out::println);
     }

@@ -52,6 +52,9 @@ public class GameBoard {
             throw new IllegalMoveException("Column[ " + column + "] is not within acceptable range [ 0 - "
                 + (COLUMNS - 1) + " ]");
         }
+        if (getWinningPieces().isPresent()) {
+            throw new IllegalMoveException("Game is over");
+        }
         var row = new AtomicInteger();
         var placed = false;
         while (row.get() < ROWS && !placed) {
